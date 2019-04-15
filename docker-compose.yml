@@ -387,7 +387,7 @@ services:
     postgres:
       build: ./postgres
       volumes:
-        - ${DATA_PATH_HOST}/postgres:/var/lib/postgresql/data
+        - ${DATA_PATH_HOST}/postgres:/var/lib/postgresql
         - ${POSTGRES_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
       ports:
         - "${POSTGRES_PORT}:5432"
@@ -395,14 +395,6 @@ services:
         - POSTGRES_DB=${POSTGRES_DB}
         - POSTGRES_USER=${POSTGRES_USER}
         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-        - GITLAB_POSTGRES_INIT=${GITLAB_POSTGRES_INIT}
-        - GITLAB_POSTGRES_USER=${GITLAB_POSTGRES_USER}
-        - GITLAB_POSTGRES_PASSWORD=${GITLAB_POSTGRES_PASSWORD}
-        - GITLAB_POSTGRES_DB=${GITLAB_POSTGRES_DB}
-        - JUPYTERHUB_POSTGRES_INIT=${JUPYTERHUB_POSTGRES_INIT}
-        - JUPYTERHUB_POSTGRES_USER=${JUPYTERHUB_POSTGRES_USER}
-        - JUPYTERHUB_POSTGRES_PASSWORD=${JUPYTERHUB_POSTGRES_PASSWORD}
-        - JUPYTERHUB_POSTGRES_DB=${JUPYTERHUB_POSTGRES_DB}
       networks:
         - backend
 
