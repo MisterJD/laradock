@@ -428,7 +428,7 @@ services:
     postgres:
       build: ./postgres
       volumes:
-        - ${DATA_PATH_HOST}/postgres:/var/lib/postgresql/data
+        - ${DATA_PATH_HOST}/postgres:/var/lib/postgresql
         - ${POSTGRES_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
       ports:
         - "${POSTGRES_PORT}:5432"
@@ -436,22 +436,6 @@ services:
         - POSTGRES_DB=${POSTGRES_DB}
         - POSTGRES_USER=${POSTGRES_USER}
         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-        - GITLAB_POSTGRES_INIT=${GITLAB_POSTGRES_INIT}
-        - GITLAB_POSTGRES_USER=${GITLAB_POSTGRES_USER}
-        - GITLAB_POSTGRES_PASSWORD=${GITLAB_POSTGRES_PASSWORD}
-        - GITLAB_POSTGRES_DB=${GITLAB_POSTGRES_DB}
-        - JUPYTERHUB_POSTGRES_INIT=${JUPYTERHUB_POSTGRES_INIT}
-        - JUPYTERHUB_POSTGRES_USER=${JUPYTERHUB_POSTGRES_USER}
-        - JUPYTERHUB_POSTGRES_PASSWORD=${JUPYTERHUB_POSTGRES_PASSWORD}
-        - JUPYTERHUB_POSTGRES_DB=${JUPYTERHUB_POSTGRES_DB}
-        - SONARQUBE_POSTGRES_INIT=${SONARQUBE_POSTGRES_INIT}
-        - SONARQUBE_POSTGRES_DB=${SONARQUBE_POSTGRES_DB}
-        - SONARQUBE_POSTGRES_USER=${SONARQUBE_POSTGRES_USER}
-        - SONARQUBE_POSTGRES_PASSWORD=${SONARQUBE_POSTGRES_PASSWORD}
-        - POSTGRES_CONFLUENCE_INIT=${CONFLUENCE_POSTGRES_INIT}
-        - POSTGRES_CONFLUENCE_DB=${CONFLUENCE_POSTGRES_DB}
-        - POSTGRES_CONFLUENCE_USER=${CONFLUENCE_POSTGRES_USER}
-        - POSTGRES_CONFLUENCE_PASSWORD=${CONFLUENCE_POSTGRES_PASSWORD}
       networks:
         - backend
 
@@ -1538,40 +1522,3 @@ services:
         - "${MANTICORE_HTTP_PORT}:9308"
       networks:
         - backend
-
-### SONARQUBE ################################################
-    sonarqube:
-      build:
-        context: ./sonarqube
-      hostname: "${SONARQUBE_HOSTNAME}"
-      volumes:
-        - ${DATA_PATH_HOST}/sonarqube/conf:/opt/sonarqube/conf
-        - ${DATA_PATH_HOST}/sonarqube/data:/opt/sonarqube/data
-        - ${DATA_PATH_HOST}/sonarqube/logs:/opt/sonarqube/logs
-        - ${DATA_PATH_HOST}/sonarqube/extensions:/opt/sonarqube/extensions
-        - ${DATA_PATH_HOST}/sonarqube/plugins:/opt/sonarqube/lib/bundled-plugins
-      ports:
-        - ${SONARQUBE_PORT}:9000
-      depends_on:
-        - postgres
-      environment:
-        - sonar.jdbc.username=${SONARQUBE_POSTGRES_USER}
-        - sonar.jdbc.password=${SONARQUBE_POSTGRES_PASSWORD}
-        - sonar.jdbc.url=jdbc:postgresql://${SONARQUBE_POSTGRES_HOST}:5432/${SONARQUBE_POSTGRES_DB}
-      networks:
-        - backend
-        - frontend
-### CONFLUENCE ################################################
-    confluence:
-      container_name: Confluence
-      image: atlassian/confluence-server:${CONFLUENCE_VERSION}
-      restart: always
-      ports:
-        - "${CONFLUENCE_HOST_HTTP_PORT}:8090"
-      networks:
-        - frontend
-        - backend
-      depends_on:
-        - postgres
-      volumes:
-        - ${DATA_PATH_HOST}/Confluence:/var/atlassian/application-data
